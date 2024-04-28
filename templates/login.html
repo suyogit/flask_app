@@ -79,6 +79,13 @@
 </head>
 <body>
     <div class="login-container">
+         {% if message %}
+            {% if message_type == 'success' %}
+                <p style="color:green">{{ message }}</p>
+            {% elif message_type == 'error' %}
+                <p style="color:red">{{ message }}</p>
+            {% endif %}
+        {% endif %}
         <h2>Login</h2>
         <form action="/perform_login" method="post">
             <label for="email">Email:</label><br>

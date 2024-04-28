@@ -80,6 +80,9 @@
 </head>
 <body>
     <div class="registration-container">
+        {% if message %}
+            <p style="color:red">{{message}}</p>
+        {%endif%}
         <h2>Registration</h2>
         <form action="/perform_registration" method="post">
             <label for="name">Name:</label><br>

@@ -19,9 +19,20 @@ def perform_registration():
     password= request.form.get('password')
     response=dbo.insert(name, email, password)
     if response:
-        return "Registration Successful"
+        return render_template('login.html', message="Registration Successful, kindly login to proceed", message_type="success")
     else:
-       return "Email already exists."
+        return render_template('register.html', message="Email already exists!")
+
+@app.route('/perform_login',methods=['post'])
+def perform_login():
+    email=request.form.get('email')
+    password= request.form.get('password')
+    response=dbo.validate( email, password)
+    if response:
+        return "welcome" #menu here
+    else:
+        return render_template('login.html', message="Email/Password did not match",  message_type="error")
+
 
 
 
