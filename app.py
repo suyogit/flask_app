@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from db import Database
 import api
 
@@ -7,6 +7,7 @@ dbo= Database()
 
 @app.route('/')
 def index():
+    # session['logged_in'] = 0
     return render_template('login.html')
 @app.route('/register')
 def register():
@@ -30,6 +31,7 @@ def perform_login():
     password= request.form.get('password')
     response=dbo.validate( email, password)
     if response:
+        session['logged_in']=1
         return redirect('/profile')
     else:
         return render_template('login.html', message="Email/Password did not match",  message_type="error")
@@ -38,18 +40,27 @@ def perform_login():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    if session:
+        return render_template('profile.html')
+    else:
+        return redirect('/')
 
 
 @app.route('/sentiment')
 def sentiment():
-    return render_template('sentiment.html')
+    if session:
+        return render_template('sentiment.html')
+    else:
+        return redirect('/')
 
 @app.route('/perform_sentiment', methods=['post'])
 def perform_sentiment():
-    text=request.form.get('text')
-    response=api.sentiment(text)
-    return render_template('sentiment.html',response=response)
+    if session:
+            text=request.form.get('text')
+            response=api.sentiment(text)
+            return render_template('sentiment.html',response=response)
+    else:
+        return redirect('/')
 
 
 app.run(debug=True)#so that we dont have o refresh multiple time
