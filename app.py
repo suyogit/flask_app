@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from db import Database
+import api
 
 app = Flask(__name__)
 dbo= Database()
@@ -29,12 +30,26 @@ def perform_login():
     password= request.form.get('password')
     response=dbo.validate( email, password)
     if response:
-        return "welcome" #menu here
+        return redirect('/profile')
     else:
         return render_template('login.html', message="Email/Password did not match",  message_type="error")
 
 
 
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+
+@app.route('/sentiment')
+def sentiment():
+    return render_template('sentiment.html')
+
+@app.route('/perform_sentiment', methods=['post'])
+def perform_sentiment():
+    text=request.form.get('text')
+    response=api.sentiment(text)
+    return render_template('sentiment.html',response=response)
 
 
 app.run(debug=True)#so that we dont have o refresh multiple time
